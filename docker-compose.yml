@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data:Z
+      - ./sql:/docker-entrypoint-initdb.d:ro,Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      retries: 10
+
+  etl:
+    build: ./etl
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    volumes:
+      - ./data:/app/data:Z
+      - ./etl:/app:Z
+    profiles: ["etl"]
+
+  # ---------------------------------------------------------------- Superset
+  superset-init:
+    build: ./superset
+    image: biofood-superset:6.1.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: &superset-env
+      SUPERSET_CONFIG_PATH: /app/superset_config/superset_config.py
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
+      SUPERSET_RO_PASSWORD: ${SUPERSET_RO_PASSWORD}
+    volumes: &superset-volumes
+      - ./superset:/app/superset_config:ro,Z
+      - superset_home:/app/superset_home
+    # Einmalig: Metadaten-Schema, Admin, Rollen (siehe superset/init.sh)
+    command: ["bash", "/app/superset_config/init.sh"]
+
+  superset:
+    build: ./superset
+    image: biofood-superset:6.1.0
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *superset-env
+      GUNICORN_TIMEOUT: 300
+    volumes: *superset-volumes
+    ports:
+      - "127.0.0.1:8088:8088"
+    restart: unless-stopped
+
+volumes:
+  superset_home:

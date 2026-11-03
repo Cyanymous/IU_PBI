@@ -1,0 +1,35 @@
+=== Stand vorher
+fakt_verkauf: 16739355 Zeilen, Umsatz 74799488.50 EUR, Jahre 2021-2024
+dim_datum: 1461 | dim_sku: 50 | dim_filiale: 130
+
+=== Lauf A: 2021-2024 erneut (Idempotenz)
+2026-11-03 12:25:05,994 INFO  Starte ETL für data/source/2021-2024
+2026-11-03 12:25:06,059 INFO  dim_filiale: 130 Filialen geladen
+2026-11-03 12:25:06,066 INFO  dim_sku: 50 Artikel geladen
+2026-11-03 12:25:59,807 INFO  Staging: 16739355 Positionen aus 130 Dateien, 0 verworfen (kein prod/SALE)
+2026-11-03 12:25:59,991 INFO  dim_datum: 1461 Tage (2021-01-01 bis 2024-12-31)
+2026-11-03 12:27:52,986 INFO  fakt_verkauf: 0 neu, 16739355 überschrieben
+2026-11-03 12:27:53,022 INFO  Lauf erfolgreich in 167 s
+=== Stand nach Lauf A
+fakt_verkauf: 16739355 Zeilen, Umsatz 74799488.50 EUR, Jahre 2021-2024
+dim_datum: 1461 | dim_sku: 50 | dim_filiale: 130
+
+=== Lauf B: 2025 (Historie wächst)
+2026-11-03 12:27:59,455 INFO  Starte ETL für data/source/2025
+2026-11-03 12:27:59,520 INFO  dim_filiale: 130 Filialen geladen
+2026-11-03 12:27:59,527 INFO  dim_sku: 50 Artikel geladen
+2026-11-03 12:28:14,609 INFO  Staging: 4523228 Positionen aus 130 Dateien, 0 verworfen (kein prod/SALE)
+2026-11-03 12:28:14,652 INFO  dim_datum: 365 Tage (2025-01-01 bis 2025-12-31)
+2026-11-03 12:29:40,007 INFO  fakt_verkauf: 4523228 neu, 0 überschrieben
+2026-11-03 12:29:40,017 INFO  Lauf erfolgreich in 101 s
+=== Stand nach Lauf B
+fakt_verkauf: 21262583 Zeilen, Umsatz 94862292.21 EUR, Jahre 2021-2025
+dim_datum: 1826 | dim_sku: 50 | dim_filiale: 130
+
+=== Quelle gesamt
+21262583 Zeilen, Umsatz 94862292.21 EUR
+
+=== Fakten ohne Dimension
+ohne Datum: 0
+ohne SKU: 0
+ohne Filiale: 0
