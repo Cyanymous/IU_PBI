@@ -27,8 +27,7 @@ CREATE TABLE dim_sku (
 
 CREATE TABLE dim_filiale (
     filiale_key		INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    filiale_id		VARCHAR(5)   NOT NULL UNIQUE,   -- Format BB-NN, z. B. 05-10
-    filiale		VARCHAR(100) NOT NULL,
+    filiale_id		INTEGER      NOT NULL UNIQUE,
     bundesland		VARCHAR(50)  NOT NULL,
     ort			VARCHAR(100) NOT NULL
 );
@@ -40,5 +39,5 @@ CREATE TABLE fakt_verkauf (
   	datum_key         	INTEGER NOT NULL REFERENCES dim_datum(datum_key),
 	kauf_nr           	INTEGER NOT NULL,           -- Degenerate Dimension
 	anzahl            	INTEGER NOT NULL CHECK (anzahl > 0),
-	PRIMARY KEY (filiale_key, kauf_nr, artikelnummer_key)
+	PRIMARY KEY (kauf_nr, artikelnummer_key)
 );

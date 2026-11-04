@@ -1,33 +1,52 @@
-=== Stand vorher
-fakt_verkauf: 16739355 Zeilen, Umsatz 74799488.50 EUR, Jahre 2021-2024
-dim_datum: 1461 | dim_sku: 50 | dim_filiale: 130
+=== Stand vorher (leeres Schema)
+fakt_verkauf: 0 Zeilen, Umsatz 0 EUR, Jahre -
+dim_datum: 0 | dim_sku: 0 | dim_filiale: 0
+Schema quelle vorhanden: 0
 
-=== Lauf A: 2021-2024 erneut (Idempotenz)
-2026-11-03 12:25:05,994 INFO  Starte ETL für data/source/2021-2024
-2026-11-03 12:25:06,059 INFO  dim_filiale: 130 Filialen geladen
-2026-11-03 12:25:06,066 INFO  dim_sku: 50 Artikel geladen
-2026-11-03 12:25:59,807 INFO  Staging: 16739355 Positionen aus 130 Dateien, 0 verworfen (kein prod/SALE)
-2026-11-03 12:25:59,991 INFO  dim_datum: 1461 Tage (2021-01-01 bis 2024-12-31)
-2026-11-03 12:27:52,986 INFO  fakt_verkauf: 0 neu, 16739355 überschrieben
-2026-11-03 12:27:53,022 INFO  Lauf erfolgreich in 167 s
-=== Stand nach Lauf A
-fakt_verkauf: 16739355 Zeilen, Umsatz 74799488.50 EUR, Jahre 2021-2024
+=== Lauf 1: Dump Stand 2024-12-31 (Erstbeladung)
+2026-11-04 07:45:14,460 INFO  Starte ETL für data/dumps/biofood_oltp_2024-12-31.sql.gz
+2026-11-04 07:45:29,954 INFO  Dump in Schema quelle wiederhergestellt (15 s)
+2026-11-04 07:45:29,960 INFO  dim_filiale: 130 Zeilen geschrieben
+2026-11-04 07:45:29,961 INFO  dim_sku: 50 Zeilen geschrieben
+2026-11-04 07:45:30,303 INFO  dim_datum: 1461 Zeilen geschrieben
+2026-11-04 07:49:49,615 INFO  fakt_verkauf: 16517372 neu, 0 überschrieben
+2026-11-04 07:49:49,700 INFO  Lauf erfolgreich in 275 s
+=== Stand nach Lauf 1
+fakt_verkauf: 16517372 Zeilen, Umsatz 73759837.52 EUR, Jahre 2021-2024
 dim_datum: 1461 | dim_sku: 50 | dim_filiale: 130
+Schema quelle vorhanden: 0
 
-=== Lauf B: 2025 (Historie wächst)
-2026-11-03 12:27:59,455 INFO  Starte ETL für data/source/2025
-2026-11-03 12:27:59,520 INFO  dim_filiale: 130 Filialen geladen
-2026-11-03 12:27:59,527 INFO  dim_sku: 50 Artikel geladen
-2026-11-03 12:28:14,609 INFO  Staging: 4523228 Positionen aus 130 Dateien, 0 verworfen (kein prod/SALE)
-2026-11-03 12:28:14,652 INFO  dim_datum: 365 Tage (2025-01-01 bis 2025-12-31)
-2026-11-03 12:29:40,007 INFO  fakt_verkauf: 4523228 neu, 0 überschrieben
-2026-11-03 12:29:40,017 INFO  Lauf erfolgreich in 101 s
-=== Stand nach Lauf B
-fakt_verkauf: 21262583 Zeilen, Umsatz 94862292.21 EUR, Jahre 2021-2025
+=== Lauf 2: Dump Stand 2024-12-31 erneut (Wiederholung, Testzeile vorher auf anzahl = 99 verfälscht)
+Testzeile kauf_nr 1, Artikel-Key 17: anzahl vorher 1, verfälscht auf 99
+2026-11-04 07:49:53,890 INFO  Starte ETL für data/dumps/biofood_oltp_2024-12-31.sql.gz
+2026-11-04 07:50:09,824 INFO  Dump in Schema quelle wiederhergestellt (16 s)
+2026-11-04 07:50:09,831 INFO  dim_filiale: 130 Zeilen geschrieben
+2026-11-04 07:50:09,833 INFO  dim_sku: 50 Zeilen geschrieben
+2026-11-04 07:50:10,237 INFO  dim_datum: 1461 Zeilen geschrieben
+2026-11-04 07:53:40,232 INFO  fakt_verkauf: 0 neu, 16517372 überschrieben
+2026-11-04 07:53:40,413 INFO  Lauf erfolgreich in 227 s
+Testzeile nach Lauf 2: anzahl 1
+=== Stand nach Lauf 2
+fakt_verkauf: 16517372 Zeilen, Umsatz 73759837.52 EUR, Jahre 2021-2024
+dim_datum: 1461 | dim_sku: 50 | dim_filiale: 130
+Schema quelle vorhanden: 0
+
+=== Lauf 3: Dump Stand 2025-12-31 (Historie wächst)
+2026-11-04 07:53:45,847 INFO  Starte ETL für data/dumps/biofood_oltp_2025-12-31.sql.gz
+2026-11-04 07:54:05,893 INFO  Dump in Schema quelle wiederhergestellt (20 s)
+2026-11-04 07:54:05,905 INFO  dim_filiale: 130 Zeilen geschrieben
+2026-11-04 07:54:05,906 INFO  dim_sku: 50 Zeilen geschrieben
+2026-11-04 07:54:06,421 INFO  dim_datum: 1826 Zeilen geschrieben
+2026-11-04 08:00:21,150 INFO  fakt_verkauf: 4456717 neu, 16517372 überschrieben
+2026-11-04 08:00:21,337 INFO  Lauf erfolgreich in 395 s
+=== Stand nach Lauf 3
+fakt_verkauf: 20974089 Zeilen, Umsatz 93531249.59 EUR, Jahre 2021-2025
 dim_datum: 1826 | dim_sku: 50 | dim_filiale: 130
+Schema quelle vorhanden: 0
 
-=== Quelle gesamt
-21262583 Zeilen, Umsatz 94862292.21 EUR
+=== Quelle (vom Generator beim Erzeugen gezählt)
+Stand 2024-12-31: 16517372 Positionen, Umsatz 73759837.52 EUR
+Stand 2025-12-31: 20974089 Positionen, Umsatz 93531249.59 EUR
 
 === Fakten ohne Dimension
 ohne Datum: 0
